@@ -3,7 +3,7 @@
 #include <ARCbus.h>
 #include <Error.h>
 #include <terminal.h>
-#include <UCA1_uart.h>
+#include <UCA2_uart.h>
 #include "pins.h"
 #include "subsystem.h"
 
@@ -16,12 +16,12 @@ unsigned sub_stack[1000];
 
 //make printf and friends use async
 int __putchar(int c){
-  return UCA1_TxChar(c);
+  return UCA2_TxChar(c);
 }
 
 //make printf and friends use async
 int __getchar(void){
-  return UCA1_Getc();
+  return UCA2_Getc();
 }
 
 
@@ -35,7 +35,10 @@ void main(void){
   //TESTING: set log level to report everything by default
   set_error_level(0);
   //initialize UART
-  UCA1_init_UART(UART_PORT,UART_TX_PIN_NUM,UART_RX_PIN_NUM);
+  UCA2_init_UART(UART_PORT,UART_TX_PIN_NUM,UART_RX_PIN_NUM);
+
+  //set up I2C bus function(unsigned int port,unsigned int sda,unsigned int scl)
+  initI2C(4,1,0);
 
   //setup bus interface
   initARCbus(0x1F);

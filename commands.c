@@ -7,7 +7,9 @@
 #include <commandLib.h>
 #include <ARCbus.h>
 #include <stdlib.h>
+#include <i2c.h>
 #include "pins.h"
+#include "temp.h"
 
 
 int example_command(char **argv,unsigned short argc){
@@ -33,9 +35,25 @@ int example_command(char **argv,unsigned short argc){
   return 0;
 }
 
+int temp(char **argv,unsigned short argc)
+{
+  unsigned char reg[1] = {TEMP_VAL};
+  unsigned char addr = 0x48; // all low (0x48); (0x4A A2 low, A1 High, A0 low); (0x49 A2 low, A1 low, A0 high); (0x4C A2 High, A1 low, A0 low); (0x4E A2 High, A1 High, A0 low); (0x4D A2 High, A1 Low, A0 High); (0x4F A2 High, A1 High, A0 High);
+  unsigned char aptr, *temp;
+  int ret;
+  ret = i2c_tx(addr, reg ,1);
+  printf("I2C TX return %i \r\n\t", ret);
+  if(ret==1){
+  ret = i2c_rx(addr,temp, 2); 
+  printf("I2C RX return %i \r\n\t", ret);
+  printf("%i.%02u \r\n\t",(short)((char)temp[0]),25*(temp[1]>>6));
+  }
+}
+
 //table of commands with help
 const CMD_SPEC cmd_tbl[]={{"help"," [command]",helpCmd},
                    {"ex","[arg1] [arg2] ...\r\n\t""Example command to show how arguments are passed",example_command},
+                   {"temp", "Takes Temperature",temp},
                    ARC_COMMANDS,CTL_COMMANDS,ERROR_COMMANDS,
                    //end of list
                    {NULL,NULL,NULL}};

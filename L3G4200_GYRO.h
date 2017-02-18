@@ -5,7 +5,7 @@
 #ifndef _L3G4200_GYRO_H
 #define _L3G4200_GYRO_H
 
-//SDO pulled high so SAD= 1101001b
+//SAD= 110100xb if SDO is high LSB is 1, if SDO is low LSB is 0
 //fall edge triggered
 
 //fixed address bits
@@ -13,20 +13,41 @@
 #define READ_SAD    0xD3
 #define Write_SAD   0xD2
 
-/////////////////////register addresses////////////////// 
-#define WHO_AM_I    0x0F
-#define REFERENCE   0X25
-#define OUT_TEMP    0x26
-#define STATUS_REG  0x27
+///////////////////// 8-bit Register Addresses////////////////// 
+#define WHO_AM_I    0x0F  //READ                          //Device ID 
+#define REFERENCE   0X25  //READ-WRITE                   //Reference value for interrupt generation. default:0
+#define OUT_TEMP    0x26  //READ                         //Temperature data
+#define STATUS_REG  0x27  //READ
 
-///Axis Registers
-#define OUT_X_LOW   0x28
+///Control Registers
+#define CTRL_REG1   0x20  //ALL are READ-WRITE
+#define CTRL_REG2   0x21
+#define CTRL_REG3   0x22
+#define CTRL_REG4   0x23
+#define CTRL_REG5   0x24
+
+///Axis Registers 
+#define OUT_X_LOW   0x28  //ALL are READ ONLY           //_-Axis angular rate expressed as 2's comp
 #define OUT_X_HIGH  0x29
 #define OUT_Y_LOW   0x2A
 #define OUT_Y_HIGH  0x2B
 #define OUT_Z_LOW   0x2C
 #define OUT_Z_HIGH  0x2D
 
+///FIFO Registers
+#define FIFO_CTRL_REG 0x2E  //READ-WRITE
+#define FIFO_SRC_REG  0x2F  //READ
+
+///Interrupt Registers
+#define INT1_CFG      0x30  // READ-WRITE
+#define INT1_SRC      0x31  // READ
+#define INT1_TSH_XH   0x32  // READ-WRITE
+#define INT1_TSH_XL   0x33  // READ-WRITE
+#define INT1_TSH_YH   0x34  // READ-WRITE
+#define INT1_TSH_YH   0x35  // READ-WRITE
+#define INT1_TSH_ZH   0x36  // READ-WRITE
+#define INT1_TSH_ZL   0x37  // READ-WRITE
+#define INT1_DURATION 0x38  // READ-WRITE
 
 
 #endif

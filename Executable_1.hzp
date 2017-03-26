@@ -27,6 +27,7 @@
       <file file_name="subsystem.c" />
       <file file_name="temp.h" />
       <file file_name="L3G4200_GYRO.h" />
+      <file file_name="C:/Users/kvtam/AppData/Local/Rowley Associates Limited/CrossWorks for MSP430/v3/packages/libraries/libctl/include/ctl.h" />
     </folder>
     <folder Name="System Files">
       <configuration Name="Common" filter="xml" />

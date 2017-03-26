@@ -9,13 +9,13 @@
 //fall edge triggered
 
 //fixed address bits
-#define SAD         0x68
+#define SAD         0x69
 #define READ_SAD    0xD3
 #define Write_SAD   0xD2
 
 ///////////////////// 8-bit Register Addresses////////////////// 
 #define WHO_AM_I    0x0F  //READ                          //Device ID 
-#define REFERENCE   0X25  //READ-WRITE                   //Reference value for interrupt generation. default:0
+#define REFERENCE/DATACAPTURE   0X25  //READ-WRITE                   //Reference value for interrupt generation. default:0
 #define OUT_TEMP    0x26  //READ                         //Temperature data
 #define STATUS_REG  0x27  //READ
 
@@ -44,7 +44,7 @@
 #define INT1_TSH_XH   0x32  // READ-WRITE
 #define INT1_TSH_XL   0x33  // READ-WRITE
 #define INT1_TSH_YH   0x34  // READ-WRITE
-#define INT1_TSH_YH   0x35  // READ-WRITE
+#define INT1_TSH_YL   0x35  // READ-WRITE
 #define INT1_TSH_ZH   0x36  // READ-WRITE
 #define INT1_TSH_ZL   0x37  // READ-WRITE
 #define INT1_DURATION 0x38  // READ-WRITE

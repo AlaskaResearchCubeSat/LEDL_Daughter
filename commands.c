@@ -35,54 +35,197 @@ int example_command(char **argv,unsigned short argc){
   }
   return 0;
 }
-
+/*
 int getRotation(char **argv, unsigned short argc){
   unsigned int port =4;
   unsigned int sda  =1;
   unsigned int scl  =0;
-  unsigned short addr[1]={CTRL_REG3};
+  unsigned short addr[2]={CTRL_REG3,0x08};
   unsigned char DRDY[1]={0x08};
   int ret;
   initI2C( port,sda,scl); 
 //initalize I2C
-  ret = i2c_tx(Write_SAD,addr,1);
+  ret = i2c_tx(SAD,addr,2);
  printf("i2ctx return %i \r\n\t",ret);
- ret = i2c_tx(CTRL_REG3,DRDY,1);
+// ret = i2c_txrx(CTRL_REG3,DRDY,1);
+ 
+
  printf("i2ctx return %i \r\n\t",ret);
 
 } 
 
+*/
+/*
+bool check(const short checkValue, short checkNumber,const unsigned char *dat){
+ 
+   if(checkValue>0){
+    printf("check %i",checkNumber,"passed r\n\t");
+    printf("sent back %i",checkValue);
+    printf("dat[0] holds %i \r\n\t",dat[0]);
+    printf("dat[1] holds %i \r\n\t",dat[1]);
+    return true;
+   }else{
+    printf("check %i",checkNumber,"failed r\n\t");
+    printf("sent back %i",checkValue);
+    return false;
+   }
+  
+}*/
 
+int getX_Rotation(){ 
+  unsigned int port=4;
+  unsigned int sda=1;
+  unsigned int scl=0;
+  short  ret;
+  short stat;
+  short pwrup;
+  signed int xmeas;
+  unsigned char statreg[1]={STATUS_REG};
+  unsigned char pwr[2]={CTRL_REG1,0x1F};
+  unsigned char dat[1];
+  unsigned short sendSize=1;
+  unsigned short receiveSize=1;
+  unsigned short addr[2]={OUT_X_LOW, OUT_X_HIGH };
+     initI2C(port,sda,scl);
+     pwrup=i2c_tx(SAD,pwr,2);
+     stat=i2c_tx(SAD,statreg,1); 
+     i2c_rx(SAD,dat,1);
+     ret=i2c_tx(SAD,addr+1,sendSize);
+      if(ret>0){//if tx is able to send 1 byte( the address of the slave) 
+           ret=i2c_rx(SAD,dat,receiveSize);
+           xmeas=dat[0];
+           xmeas=xmeas<<8;
+      }else{
+           printf("ret failed, ret returned %i \r\n\t",ret);
+           return 0;
+      }
+    ret=i2c_tx(SAD,addr,sendSize);
+      if(ret>0){//if tx is able to send 1 byte( the address of the slave) 
+           ret=i2c_rx(SAD,dat,receiveSize);
+           xmeas |=dat[0];
+      }else{
+           printf("ret failed, ret returned %i \r\n\t",ret);
+           return 0;
+      }
+    xmeas*=(8.75/1000);
+    return xmeas;
+     // printf(" \r\n\t X axis rotational rate %i deg/sec",xmeas);
+}
 
+int getY_Rotation(){
+  unsigned int port=4;
+  unsigned int sda=1;
+  unsigned int scl=0;
+  short  ret;
+  short stat;
+  short pwrup;
+  signed int ymeas;
+  unsigned char statreg[1]={STATUS_REG};
+  unsigned char pwr[2]={CTRL_REG1,0x1F};
+  unsigned char dat[1];
+  unsigned short sendSize=1;
+  unsigned short receiveSize=1;
+  unsigned short addr[2]={OUT_Y_LOW, OUT_Y_HIGH };
+    initI2C(port,sda,scl);
+    pwrup=i2c_tx(SAD,pwr,2);
+    stat=i2c_tx(SAD,statreg,1);
+    i2c_rx(SAD,dat,1);
+    ret=i2c_tx(SAD,addr+1,sendSize);
+      if(ret>0){//if tx is able to send 1 byte( the address of the slave) 
+           ret=i2c_rx(SAD,dat,receiveSize);
+           ymeas=dat[0];
+           ymeas=ymeas<<8;
+      }else{
+           printf("ret failed, ret returned %i \r\n\t",ret);
+           return 0;
+      }
+    ret=i2c_tx(SAD,addr,sendSize);
+      if(ret>0){//if tx is able to send 1 byte( the address of the slave) 
+           ret=i2c_rx(SAD,dat,receiveSize);
+           ymeas |=dat[0];
+      }else{
+           printf("ret failed, ret returned %i \r\n\t",ret);
+           return 0;
+      }
+    ymeas*=(8.75/1000);
+    return ymeas;
+      //printf(" \r\n\t Y axis rotational rate %i deg/sec",ymeas);
+}
 
+int getZ_Rotation(){
+  unsigned int port=4;
+  unsigned int sda=1;
+  unsigned int scl=0;
+  short  ret;
+  short stat;
+  short pwrup;
+  signed int zmeas;
+  unsigned char statreg[1]={STATUS_REG};
+  unsigned char pwr[2]={CTRL_REG1,0x1F};
+  unsigned char dat[1];
+  unsigned short sendSize=1;
+  unsigned short receiveSize=1;
+  unsigned short addr[2]={OUT_Z_LOW, OUT_Z_HIGH };
+    initI2C(port,sda,scl);
+    pwrup=i2c_tx(SAD,pwr,2);
+    stat=i2c_tx(SAD,statreg,1); 
+    i2c_rx(SAD,dat,1);
+    ret=i2c_tx(SAD,addr+1,sendSize);
+      if(ret>0){//if tx is able to send 1 byte( the address of the slave) 
+           ret=i2c_rx(SAD,dat,receiveSize);
+           zmeas=dat[0];
+           zmeas=zmeas<<8;
+      }else{
+           printf("ret failed, ret returned %i \r\n\t",ret);
+           return 0;
+      }
+    ret=i2c_tx(SAD,addr,sendSize);
+      if(ret>0){//if tx is able to send 1 byte( the address of the slave) 
+           ret=i2c_rx(SAD,dat,receiveSize);
+           zmeas |=dat[0];
+      }else{
+           printf("ret failed, ret returned %i \r\n\t",ret);
+           return 0;
+      }
+    zmeas*=(8.75/1000);
+    return zmeas;
+    //  printf(" \r\n\t Z axis rotational rate %i deg/sec",zmeas);
+}
 
-
+void rotationVector(char **argv, unsigned short argc){
+  while(UCA2_CheckKey()==EOF){
+      short xValue=getX_Rotation(), yValue=getY_Rotation(), zValue=getZ_Rotation();
+      printf("(%i,%i,%i) %c/sec \r\n\t", xValue,yValue,zValue,248);
+      ctl_timeout_wait(ctl_get_current_time()+750);
+  }
+}
 
 //this function works
-/*
+
 int getRotation(char **argv, unsigned short argc){
  unsigned int port =4;
   unsigned int sda  =1;
   unsigned int scl  =0;
    short ret;
    unsigned short busSize=1;
-  unsigned char *dat;
-  
+  unsigned char dat[1];
   unsigned short addr[1]= {WHO_AM_I};
   initI2C( port,sda,scl); 
   ret= i2c_tx(0x69,addr,busSize);
     printf("tx return %i \r\n\t",ret);
     printf("dat stored %s \r\n\t",*dat);
   ret=i2c_rx(0x69,dat,1);
+
        printf("rx return %i \r\n\t",ret);
-    printf("dat stored %x \r\n\t",*dat);
+    printf("dat stored %xh \r\n\t", dat[0]);
 
   //ret = i2c_txrx(0x69,addr,busSize,dat,busSize);
  // ret = i2c_rx(addr, dat , busSize);
  
 
   
-} */
+} 
+
 
 /*
 int getRotation(char **argv, unsigned short argc){
@@ -117,6 +260,7 @@ const CMD_SPEC cmd_tbl[]={{"help"," [command]",helpCmd},
                    {"ex","[arg1] [arg2] ...\r\n\t""Example command to show how arguments are passed",example_command},
                    {"temp", "Takes Temperature",temp},
                    {"gyro", "experimental",getRotation},
+                   {"rotV","gets rotational data as a vector (x,y,z)",rotationVector}, 
                    ARC_COMMANDS,CTL_COMMANDS,ERROR_COMMANDS,
                    //end of list
                    {NULL,NULL,NULL}};
